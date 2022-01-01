@@ -1,1 +1,1 @@
-from distributed_structures.node import node
+from distributed_structures.node import node, client
