@@ -13,7 +13,9 @@ if args.port:
     
 def test_client_init():
     c = client()
-    c.send("test")
+    l = c.dlist("my_list")
+    print(l)
+    #c.lists()
     
 if __name__ == "__main__":
     test_client_init()
