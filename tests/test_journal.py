@@ -12,13 +12,18 @@ def test_journal_block_creation():
             'value': 1,
             'type': 'int'
         },
+        'previous': None,
         'next': None
     }
     assert jb.digest() == hash_string(dumps(block_dict))
 
 def test_journal():
     j = journal()
-    print(j)
+    for n in range(10):
+        jb = journal_block()
+        jb.value = n
+        j.entry(jb)
+
 
 if __name__ == "__main__":
     test_journal_block_creation()
