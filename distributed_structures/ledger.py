@@ -1,4 +1,4 @@
-from distributed_structures.block import block
+from distributed_structures.journal_block import block
 from os import environ, mkdir
 from os.path import exists, isfile
 from json import loads, dumps
