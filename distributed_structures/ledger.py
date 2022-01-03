@@ -5,12 +5,12 @@ from json import loads, dumps
 
 class ledger:
         
-    def __init__(self):
-        ledger_dir = environ.get("LDR_DIR")
-        if not ledger_dir:
+    def __init__(self, dirname = None):
+        if not dirname:
             print("No ledger dir")
             exit(-1)
         
+        ledger_dir = dirname
         self.leafs = {}
         if not exists(ledger_dir):
             mkdir(ledger_dir)
@@ -66,3 +66,11 @@ class ledger:
             node.next = b.hash()
         
         return b
+    
+    
+#
+#
+#
+
+class distributed_ledger:
+    pass

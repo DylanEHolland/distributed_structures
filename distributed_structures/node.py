@@ -6,6 +6,7 @@ import asyncio
 from websockets import serve
 from datetime import datetime
 from json import dumps, loads
+from distributed_structures.distributed_list import distributed_list
 
 class node:
     data_dir = f"{environ.get('DIS_DS_DAEMON_PATH')}/"
@@ -26,21 +27,21 @@ class node:
             mkdir(self.peers_dir)
             
         if not exists(self.lists_dir):
-            mkdir(self.lists_dir)            
-            
-    def list(self, name):
-        pass
+            mkdir(self.lists_dir)
     
     def run(self):
         async def handler(websocket, port):
             async for message in websocket:
+                message = loads(message)
                 remote_user = ":".join([str(f) for f in websocket.remote_address])
                 print(f"[{datetime.now()}] {remote_user} {message}")
+                
                 output = {
                     'request': message,
                     'response': None
                 }
-                output['response'] = self.lists
+                
+                output['response'] = self.parse(message)
                 await websocket.send(dumps(output))
 
         async def main():
@@ -48,6 +49,19 @@ class node:
                 await asyncio.Future()  # run forever
 
         print(asyncio.run(main()))
+        
+    def parse(self, request):
+        output = list(self.lists.keys())
+        if type(request) == dict:
+            if request['action'] == "[CREATE]":
+                print("Creating list", request['name'])
+                dlist_name = request['name']
+                if dlist_name not in self.lists:
+                    #self.lists[dlist_name] = ledger(f"{self.lists_dir}/{dlist_name}")
+                    distributed_list()
+        
+        print(self.lists)
+        return output
         
 class client:
     socket = None
@@ -65,12 +79,17 @@ class client:
     def dlist(self, name):
         if name not in self.dlists:
             print("Maybe creating")
-            self.send("[GET_LISTS]")
+            foreign_lists = self.send("[GET_LISTS]")['response']
+            if name not in foreign_lists:
+                self.send({
+                    'action': "[CREATE]",
+                    'name': name
+                })
         
     def send(self, payload):
         async def hello(uri):
             async with connect(uri) as websocket:
-                await websocket.send(payload)                        
+                await websocket.send(dumps(payload))
                 return await websocket.recv()
 
         result = asyncio.run(hello(self.socket_url))

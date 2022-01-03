@@ -5,6 +5,8 @@ ap = ArgumentParser()
 ap.add_argument("-p", "--port")
 args = ap.parse_args()
 
+print("Running distributed node...")
+
 port = 8765
 if args.port:
     port = args.port
