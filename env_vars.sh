@@ -1,3 +1,3 @@
 export PYTHONPATH="./";
-export DIS_DS_DAEMON_PATH="/tmp/daemon";
-export LDR_DIR="/tmp/ldr";
+export DISTRIBUTED_STRUCTURES_DATA_DIR="/tmp/daemon";
+export DISTRIBUTED_STRUCTURES_HASH_FN="md5";

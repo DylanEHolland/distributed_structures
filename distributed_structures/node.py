@@ -9,7 +9,7 @@ from json import dumps, loads
 from distributed_structures.distributed_list import distributed_list
 
 class node:
-    data_dir = f"{environ.get('DIS_DS_DAEMON_PATH')}/"
+    data_dir = f"{environ.get('DISTRIBUTED_STRUCTURES_DATA_DIR')}/"
     port = 8675
     
     def __init__(self, **args):
