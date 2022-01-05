@@ -5,13 +5,19 @@ from json import dumps, loads
 
 class journal_block:
     # Blocks need to store a single value, the values type and what comes after it (if applicable)
+    timestamp = None
     def __init__(self, **args):
         self.previous = None
         self.next = None
         self.value = None
         self.type = type(None)
         if 'from_dict' in args:
-            print("Loading block")
+            data = args.get('from_dict')
+            self.type = types[data['body']['type']]
+            self.value = self.type(data['body']['value'])
+            self.previous = data['previous']
+            self.next = data['next']
+            self.timestamp = datetime.fromisoformat(data['timestamp'])
         else:
             self.timestamp = datetime.now()
     
@@ -31,6 +37,7 @@ class journal_block:
     
     def to_dict(self):
         return {
+            'timestamp': self.timestamp,
             'body': {
                 'value': self.value,
                 'type': self.type
@@ -43,6 +50,8 @@ class journal_block:
         data = self.to_dict()
         b_type = data['body']['type']
         data['body']['type'] = type_to_string(b_type)
+        if data['timestamp']:
+            data['timestamp'] = data['timestamp'].isoformat()
 
         if data_only:
             del data['previous']
